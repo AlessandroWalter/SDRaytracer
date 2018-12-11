@@ -1,0 +1,17 @@
+language: java
+
+notifications:
+  email:
+    recipients:
+      - alessandro.walter@outlook.de
+    on_success: always
+    on_failure: always
+
+addons:
+  sonarcloud:
+    organization: "alessandrowalter-github"
+    token: $SDRaytracer
+
+script:
+  # the folowing command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
