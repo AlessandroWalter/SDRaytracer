@@ -90,33 +90,33 @@ SDRaytracer(){
                 }
             }
            };
-    //TODO switch case
-   addKeyListener(new KeyAdapter()
-         { public void keyPressed(KeyEvent e)
-            { boolean redraw=false;
-              if (e.getKeyCode()==KeyEvent.VK_DOWN)
-                {  xAngleFactor--;
-                  redraw=true;
-                }
-              if (e.getKeyCode()==KeyEvent.VK_UP)
-                {  xAngleFactor++;
-                  redraw=true;
-                }
-              if (e.getKeyCode()==KeyEvent.VK_LEFT)
-                { yAngleFactor--;
-                  redraw=true;
-                }
-              if (e.getKeyCode()==KeyEvent.VK_RIGHT)
-                { yAngleFactor++;
-                  redraw=true;
-                }
-              if (redraw)
-               { createScene();
-                 renderImage();
-                 repaint();
-               }
-            }
-         });
+   addKeyListener(new KeyAdapter(){
+       public void keyPressed(KeyEvent e){
+           boolean redraw=false;
+           switch (e.getKeyCode()){
+               case KeyEvent.VK_DOWN:
+                   xAngleFactor--;
+                   redraw=true;
+                   break;
+               case KeyEvent.VK_UP:
+                   xAngleFactor--;
+                   redraw=true;
+                   break;
+               case KeyEvent.VK_LEFT:
+                   yAngleFactor--;
+                   redraw=true;
+                   break;
+               case KeyEvent.VK_RIGHT:
+                   yAngleFactor++;
+                   redraw=true;
+           }
+          if (redraw)
+           { createScene();
+             renderImage();
+             repaint();
+           }
+       }
+   });
          
         area.setPreferredSize(new Dimension(width,height));
         contentPane.add(area);
