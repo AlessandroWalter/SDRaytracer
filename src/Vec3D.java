@@ -1,5 +1,5 @@
 class Vec3D {
-    float x, y, z, w=1;
+    private float x, y, z, w=1;
     Vec3D(float xx, float yy, float zz) { x=xx; y=yy; z=zz; }
     Vec3D(float xx, float yy, float zz, float ww) { x=xx; y=yy; z=zz; w=ww; }
     Vec3D add(Vec3D v)
@@ -20,5 +20,37 @@ class Vec3D {
 
     Vec3D cross(Vec3D v) {
         return new Vec3D( y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x);
+    }
+
+    float getX() {
+        return x;
+    }
+
+    void setX(float x) {
+        this.x = x;
+    }
+
+    float getY() {
+        return y;
+    }
+
+    void setY(float y) {
+        this.y = y;
+    }
+
+    float getZ() {
+        return z;
+    }
+
+    void setZ(float z) {
+        this.z = z;
+    }
+
+    float getW() {
+        return w;
+    }
+
+    void setW(float w) {
+        this.w = w;
     }
 }

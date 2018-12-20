@@ -6,6 +6,6 @@ public class Main {
         long end = System.currentTimeMillis();
         long time = end - start;
         System.out.println("time: " + time + " ms");
-        System.out.println("nrprocs="+sdr.nrOfProcessors);
+        System.out.println("nrprocs="+sdr.getNrOfProcessors());
     }
 }

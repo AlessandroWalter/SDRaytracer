@@ -19,34 +19,34 @@ import java.util.concurrent.Future;
 
 public class SDRaytracer extends JFrame{
    private static final long serialVersionUID = 1L;
-   boolean profiling=false;
-   int width=1000;
-   int height=1000;
+   private boolean profiling=false;
+   private int width=1000;
+   private int height=1000;
    
-   Future[] futureList= new Future[width];
-   int nrOfProcessors = Runtime.getRuntime().availableProcessors();
-   ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
+   private Future[] futureList= new Future[width];
+   private int nrOfProcessors = Runtime.getRuntime().availableProcessors();
+   private ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
    
-   int maxRec=3;
-   int rayPerPixel=1;
-   int startX, startY, startZ;
+   private int maxRec=3;
+   private int rayPerPixel=1;
+   private int startX, startY, startZ;
 
-   List<Triangle> triangles;
+   private List<Triangle> triangles;
 
-   Light mainLight  = new Light(new Vec3D(0,100,0), new RGB(0.1f,0.1f,0.1f));
+   private Light mainLight  = new Light(new Vec3D(0,100,0), new RGB(0.1f,0.1f,0.1f));
 
-   Light lights[]= new Light[]{ mainLight
+   private Light lights[]= new Light[]{ mainLight
                                 ,new Light(new Vec3D(100,200,300), new RGB(0.5f,0,0.0f))
                                 ,new Light(new Vec3D(-100,200,300), new RGB(0.0f,0,0.5f))
                               };
 
-   RGB [][] image= new RGB[width][height];
+   private RGB [][] image= new RGB[width][height];
    
-   float fovx=(float) 0.628;
-   float fovy=(float) 0.628;
-   RGB ambient_color=new RGB(0.01f,0.01f,0.01f);
-   RGB black=new RGB(0.0f,0.0f,0.0f);
-   int y_angle_factor=4, x_angle_factor=-4;
+   private float fovx=(float) 0.628;
+   private float fovy=(float) 0.628;
+   private RGB ambient_color=new RGB(0.01f,0.01f,0.01f);
+   private RGB black=new RGB(0.0f,0.0f,0.0f);
+   private int y_angle_factor=4, x_angle_factor=-4;
 
 void profileRenderImage(){
   long end, start, time;
@@ -150,7 +150,7 @@ void renderImage(){
 RGB rayTrace(Ray ray, int rec) {
    if (rec>maxRec) return black;
    IPoint ip = hitObject(ray);  // (ray, p, n, triangle);
-   if (ip.dist>IPoint.epsilon)
+   if (ip.getDist()>IPoint.epsilon)
      return lighting(ray, ip, rec);
    else
      return black;
@@ -162,13 +162,13 @@ IPoint hitObject(Ray ray) {
    float idist=-1;
    for(Triangle t : triangles)
      { IPoint ip = ray.intersect(t);
-        if (ip.dist!=-1)
-        if ((idist==-1)||(ip.dist<idist))
+        if (ip.getDist()!=-1)
+        if ((idist==-1)||(ip.getDist()<idist))
          { // save that intersection
-          idist=ip.dist;
-          isect.ipoint=ip.ipoint;
-          isect.dist=ip.dist;
-          isect.triangle=t;
+          idist=ip.getDist();
+          isect.setIpoint(ip.getIpoint());
+          isect.setDist(ip.getDist());
+          isect.setTriangle(t);
          }
      }
    return isect;  // return intersection point and normal
@@ -176,35 +176,34 @@ IPoint hitObject(Ray ray) {
 
 
 RGB addColors(RGB c1, RGB c2, float ratio)
- { return new RGB( (c1.red+c2.red*ratio),
-           (c1.green+c2.green*ratio),
-           (c1.blue+c2.blue*ratio));
+ { return new RGB( (c1.getRed()+c2.getRed()*ratio),
+           (c1.getGreen()+c2.getGreen()*ratio),
+           (c1.getBlue()+c2.getBlue()*ratio));
   }
   
 RGB lighting(Ray ray, IPoint ip, int rec) {
-  Vec3D point=ip.ipoint;
-  Triangle triangle=ip.triangle;
-  RGB color = addColors(triangle.color,ambient_color,1);
+  Vec3D point=ip.getIpoint();
+  Triangle triangle=ip.getTriangle();
+  RGB color = addColors(triangle.getColor(),ambient_color,1);
   Ray shadow_ray=new Ray();
    for(Light light : lights)
-       { shadow_ray.start=point;
-         shadow_ray.dir=light.position.minus(point).mult(-1);
-         shadow_ray.dir.normalize();
+       { shadow_ray.setStart(point);
+         shadow_ray.setDir(light.getPosition().minus(point).mult(-1));
+         shadow_ray.getDir().normalize();
          IPoint ip2=hitObject(shadow_ray);
-         if(ip2.dist<IPoint.epsilon)
+         if(ip2.getDist()<IPoint.epsilon)
          {
-           float ratio=Math.max(0,shadow_ray.dir.dot(triangle.normal));
-           color = addColors(color,light.color,ratio);
+           float ratio=Math.max(0,shadow_ray.getDir().dot(triangle.getNormal()));
+           color = addColors(color,light.getColor(),ratio);
          }
        }
      Ray reflection=new Ray();
-     //R = 2N(N*L)-L)    L ausgehender Vektor
-     Vec3D L=ray.dir.mult(-1);
-     reflection.start=point;
-     reflection.dir=triangle.normal.mult(2*triangle.normal.dot(L)).minus(L);
-     reflection.dir.normalize();
+     Vec3D L=ray.getDir().mult(-1);
+     reflection.setStart(point);
+     reflection.setDir(triangle.getNormal().mult(2*triangle.getNormal().dot(L)).minus(L));
+     reflection.getDir().normalize();
      RGB rcolor=rayTrace(reflection, rec+1);
-     float ratio =  (float) Math.pow(Math.max(0,reflection.dir.dot(L)), triangle.shininess);
+     float ratio =  (float) Math.pow(Math.max(0,reflection.getDir().dot(L)), triangle.getShininess());
      color = addColors(color,rcolor,ratio);
      return(color);
   }
@@ -227,6 +226,40 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
      m.print();
      m.apply(triangles);
    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    int getNrOfProcessors() {
+        return nrOfProcessors;
+    }
+
+    int getRayPerPixel() {
+        return rayPerPixel;
+    }
+
+    int getStartX() {
+        return startX;
+    }
+
+    int getStartY() {
+        return startY;
+    }
+
+    int getStartZ() {
+        return startZ;
+    }
+
+    RGB[][] getImage() {
+        return image;
+    }
 }
 
 

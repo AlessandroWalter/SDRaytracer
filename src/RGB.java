@@ -1,8 +1,8 @@
 import java.awt.*;
 
 class RGB {
-    float red,green,blue;
-    Color color;
+    private float red,green,blue;
+    private Color color;
 
     RGB(float r, float g, float b)
     { if (r>1) r=1; else if (r<0) r=0;
@@ -17,4 +17,15 @@ class RGB {
         return color;
     }
 
+    public float getRed() {
+        return red;
+    }
+
+    public float getGreen() {
+        return green;
+    }
+
+    public float getBlue() {
+        return blue;
+    }
 }

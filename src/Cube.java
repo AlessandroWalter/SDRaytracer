@@ -2,7 +2,7 @@ import java.util.List;
 
 class Cube
 {
-    public static void addCube(List<Triangle> triangles, int x, int y, int z, int w, int h, int d, RGB c, float sh)
+    static void addCube(List<Triangle> triangles, int x, int y, int z, int w, int h, int d, RGB c, float sh)
     {  //front
         triangles.add(new Triangle(new Vec3D(x,y,z), new Vec3D(x+w,y,z), new Vec3D(x,y+h,z), c, sh));
         triangles.add(new Triangle(new Vec3D(x+w,y,z), new Vec3D(x+w,y+h,z), new Vec3D(x,y+h,z), c, sh));
