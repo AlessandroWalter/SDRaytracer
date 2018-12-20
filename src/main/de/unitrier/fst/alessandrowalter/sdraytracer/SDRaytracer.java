@@ -19,12 +19,12 @@ import java.util.concurrent.Future;
    Stephan Diehl, Universitaet Trier, 2010-2016
 */
 
-public class SDRaytracer extends JFrame{
-   private static final long serialVersionUID = 1L;
+public class SDRaytracer{
    private boolean profiling=false;
    private int width=1000;
    private int height=1000;
-   
+   private JFrame jFrame;
+
    private Future[] futureList= new Future[width];
    private int nrOfProcessors = Runtime.getRuntime().availableProcessors();
    private ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
@@ -68,17 +68,18 @@ void profileRenderImage(){
        time = end - start;
        System.out.print(";"+time);
      }
-    System.out.println("");
+    System.out.println();
    }
 }
 
 SDRaytracer(){
+    jFrame = new JFrame("SDRaytracer");
    createScene();
 
    if (!profiling) renderImage(); else profileRenderImage();
-   
-   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   Container contentPane = this.getContentPane();
+
+    jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container contentPane = jFrame.getContentPane();
    contentPane.setLayout(new BorderLayout());
    JPanel area = new JPanel() {
             public void paint(Graphics g) {
@@ -92,7 +93,7 @@ SDRaytracer(){
                 }
             }
            };
-   addKeyListener(new KeyAdapter(){
+    jFrame.addKeyListener((new KeyAdapter(){
        public void keyPressed(KeyEvent e){
            boolean redraw=false;
            switch (e.getKeyCode()){
@@ -115,15 +116,15 @@ SDRaytracer(){
           if (redraw)
            { createScene();
              renderImage();
-             repaint();
+             jFrame.repaint();
            }
        }
-   });
+   }));
          
         area.setPreferredSize(new Dimension(width,height));
         contentPane.add(area);
-        this.pack();
-        this.setVisible(true);
+        jFrame.pack();
+        jFrame.setVisible(true);
 }
 
 double tanFovx;
@@ -133,7 +134,7 @@ void renderImage(){
    tanFovx = Math.tan(fovx);
    tanFovy = Math.tan(fovy);
    for(int i=0;i<width;i++)
-   { futureList[i]=  (Future) eservice.submit(new RaytraceTask(this,i)); 
+   { futureList[i]=  eservice.submit(new RaytraceTask(this,i));
    }
    
     for(int i=0;i<width;i++)
@@ -151,7 +152,7 @@ void renderImage(){
 
 RGB rayTrace(Ray ray, int rec) {
    if (rec>maxRec) return black;
-   IPoint ip = hitObject(ray);  // (ray, p, n, triangle);
+   IPoint ip = hitObject(ray);
    if (ip.getDist()>IPoint.epsilon)
      return lighting(ray, ip, rec);
    else
@@ -229,12 +230,10 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
      m.apply(triangles);
    }
 
-    @Override
     public int getWidth() {
         return width;
     }
 
-    @Override
     public int getHeight() {
         return height;
     }

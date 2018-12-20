@@ -8,7 +8,7 @@ class Ray {
     void setDir(float dx, float dy, float dz) { dir=new Vec3D(dx, dy, dz); }
     void normalize() {  dir.normalize(); }
 
-    // see M�ller&Haines, page 305
+    // see Mueller&Haines, page 305
     IPoint intersect(Triangle t)
     { float epsilon=IPoint.epsilon;
         Vec3D e1 = t.getP2().minus(t.getP1());
