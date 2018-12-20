@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 import java.awt.*;
 
 class RGB {

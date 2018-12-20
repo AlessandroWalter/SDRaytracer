@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 class Triangle{
     private Vec3D p1,p2,p3;
     private RGB color;

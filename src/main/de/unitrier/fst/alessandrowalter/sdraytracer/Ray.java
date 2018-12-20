@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 class Ray {
     private Vec3D start=new Vec3D(0,0,0);
     private Vec3D dir=new Vec3D(0,0,0);

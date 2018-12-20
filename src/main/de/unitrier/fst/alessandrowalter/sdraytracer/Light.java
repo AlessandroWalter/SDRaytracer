@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 class Light {
     private RGB color;
     private Vec3D position;

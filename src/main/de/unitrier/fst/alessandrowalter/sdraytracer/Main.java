@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 public class Main {
 
     public static void  main(String argv[]){

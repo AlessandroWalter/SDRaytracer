@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 class IPoint {
     final static float epsilon=0.0001f;
     private Triangle triangle;

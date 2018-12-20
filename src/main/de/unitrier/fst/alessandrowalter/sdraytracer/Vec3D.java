@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 class Vec3D {
     private float x, y, z, w=1;
     Vec3D(float xx, float yy, float zz) { x=xx; y=yy; z=zz; }

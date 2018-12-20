@@ -1,3 +1,5 @@
+package main.de.unitrier.fst.alessandrowalter.sdraytracer;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Container;
@@ -14,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /* Implementation of a very simple Raytracer
-   Stephan Diehl, Universit�t Trier, 2010-2016
+   Stephan Diehl, Universitaet Trier, 2010-2016
 */
 
 public class SDRaytracer extends JFrame{
