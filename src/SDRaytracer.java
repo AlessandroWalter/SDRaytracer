@@ -44,9 +44,9 @@ public class SDRaytracer extends JFrame{
    
    private float fovx=(float) 0.628;
    private float fovy=(float) 0.628;
-   private RGB ambient_color=new RGB(0.01f,0.01f,0.01f);
+   private RGB ambientColor =new RGB(0.01f,0.01f,0.01f);
    private RGB black=new RGB(0.0f,0.0f,0.0f);
-   private int y_angle_factor=4, x_angle_factor=-4;
+   private int yAngleFactor =4, xAngleFactor =-4;
 
 void profileRenderImage(){
   long end, start, time;
@@ -80,7 +80,7 @@ SDRaytracer(){
    contentPane.setLayout(new BorderLayout());
    JPanel area = new JPanel() {
             public void paint(Graphics g) {
-              System.out.println("fovx="+fovx+", fovy="+fovy+", xangle="+x_angle_factor+", yangle="+y_angle_factor);
+              System.out.println("fovx="+fovx+", fovy="+fovy+", xangle="+ xAngleFactor +", yangle="+ yAngleFactor);
               if (image==null) return;
               for(int i=0;i<width;i++)
                for(int j=0;j<height;j++)
@@ -95,19 +95,19 @@ SDRaytracer(){
          { public void keyPressed(KeyEvent e)
             { boolean redraw=false;
               if (e.getKeyCode()==KeyEvent.VK_DOWN)
-                {  x_angle_factor--;
+                {  xAngleFactor--;
                   redraw=true;
                 }
               if (e.getKeyCode()==KeyEvent.VK_UP)
-                {  x_angle_factor++;
+                {  xAngleFactor++;
                   redraw=true;
                 }
               if (e.getKeyCode()==KeyEvent.VK_LEFT)
-                { y_angle_factor--;
+                { yAngleFactor--;
                   redraw=true;
                 }
               if (e.getKeyCode()==KeyEvent.VK_RIGHT)
-                { y_angle_factor++;
+                { yAngleFactor++;
                   redraw=true;
                 }
               if (redraw)
@@ -124,12 +124,12 @@ SDRaytracer(){
         this.setVisible(true);
 }
 
-double tan_fovx;
-double tan_fovy;
+double tanFovx;
+double tanFovy;
  
 void renderImage(){
-   tan_fovx = Math.tan(fovx);
-   tan_fovy = Math.tan(fovy);
+   tanFovx = Math.tan(fovx);
+   tanFovy = Math.tan(fovy);
    for(int i=0;i<width;i++)
    { futureList[i]=  (Future) eservice.submit(new RaytraceTask(this,i)); 
    }
@@ -184,16 +184,16 @@ RGB addColors(RGB c1, RGB c2, float ratio)
 RGB lighting(Ray ray, IPoint ip, int rec) {
   Vec3D point=ip.getIpoint();
   Triangle triangle=ip.getTriangle();
-  RGB color = addColors(triangle.getColor(),ambient_color,1);
-  Ray shadow_ray=new Ray();
+  RGB color = addColors(triangle.getColor(), ambientColor,1);
+  Ray shadowRay=new Ray();
    for(Light light : lights)
-       { shadow_ray.setStart(point);
-         shadow_ray.setDir(light.getPosition().minus(point).mult(-1));
-         shadow_ray.getDir().normalize();
-         IPoint ip2=hitObject(shadow_ray);
+       { shadowRay.setStart(point);
+         shadowRay.setDir(light.getPosition().minus(point).mult(-1));
+         shadowRay.getDir().normalize();
+         IPoint ip2=hitObject(shadowRay);
          if(ip2.getDist()<IPoint.epsilon)
          {
-           float ratio=Math.max(0,shadow_ray.getDir().dot(triangle.getNormal()));
+           float ratio=Math.max(0,shadowRay.getDir().dot(triangle.getNormal()));
            color = addColors(color,light.getColor(),ratio);
          }
        }
@@ -219,8 +219,8 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
      Cube.addCube(triangles, -70,-26,-40, 130,3,40,new RGB(.5f,.5f,.5f), 0.2f);
 
 
-     Matrix mRx=Matrix.createXRotation((float) (x_angle_factor*Math.PI/16));
-     Matrix mRy=Matrix.createYRotation((float) (y_angle_factor*Math.PI/16));
+     Matrix mRx=Matrix.createXRotation((float) (xAngleFactor *Math.PI/16));
+     Matrix mRy=Matrix.createYRotation((float) (yAngleFactor *Math.PI/16));
      Matrix mT=Matrix.createTranslation(0,0,200);
      Matrix m=mT.mult(mRx).mult(mRy);
      m.print();

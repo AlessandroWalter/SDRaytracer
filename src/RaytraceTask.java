@@ -14,13 +14,13 @@ class RaytraceTask implements Callable{
             { double di=i+(Math.random()/2-0.25);
                 double dj=j+(Math.random()/2-0.25);
                 if (tracer.getRayPerPixel()==1) { di=i; dj=j; }
-                Ray eye_ray=new Ray();
-                eye_ray.setStart(tracer.getStartX(), tracer.getStartY(), tracer.getStartZ());   // ro
-                eye_ray.setDir  ((float) (((0.5 + di) * tracer.tan_fovx * 2.0) / tracer.getWidth() - tracer.tan_fovx),
-                        (float) (((0.5 + dj) * tracer.tan_fovy * 2.0) / tracer.getHeight() - tracer.tan_fovy),
-                        (float) 1f);    // rd
-                eye_ray.normalize();
-                col[j]= tracer.addColors(tracer.getImage()[i][j],tracer.rayTrace(eye_ray,0),1.0f/tracer.getRayPerPixel());
+                Ray eyeRay=new Ray();
+                eyeRay.setStart(tracer.getStartX(), tracer.getStartY(), tracer.getStartZ());   // ro
+                eyeRay.setDir  ((float) (((0.5 + di) * tracer.tanFovx * 2.0) / tracer.getWidth() - tracer.tanFovx),
+                        (float) (((0.5 + dj) * tracer.tanFovy * 2.0) / tracer.getHeight() - tracer.tanFovy),
+                        1f);    // rd
+                eyeRay.normalize();
+                col[j]= tracer.addColors(tracer.getImage()[i][j],tracer.rayTrace(eyeRay,0),1.0f/tracer.getRayPerPixel());
             }
         }
         return col;
