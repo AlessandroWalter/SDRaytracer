@@ -1,3 +1,7 @@
+/**
+ * Alessandro Walter - 1450293
+ */
+
 package main.de.unitrier.fst.alessandrowalter.sdraytracer;
 
 import java.awt.*;
