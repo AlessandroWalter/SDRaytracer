@@ -33,7 +33,7 @@ public class SDRaytracer{
    private int rayPerPixel=1;
    private int startX, startY, startZ;
 
-   private List<Triangle> triangles;
+   private List<Figures> figuresList;
 
    private Light mainLight  = new Light(new Vec3D(0,100,0), new RGB(0.1f,0.1f,0.1f));
 
@@ -163,15 +163,15 @@ RGB rayTrace(Ray ray, int rec) {
 IPoint hitObject(Ray ray) {
    IPoint isect=new IPoint(null,null,-1);
    float idist=-1;
-   for(Triangle t : triangles)
-     { IPoint ip = ray.intersect(t);
+   for(Figures figures : figuresList)
+     { IPoint ip = ray.intersect(figures);
         if (ip.getDist()!=-1)
         if ((idist==-1)||(ip.getDist()<idist))
          { // save that intersection
           idist=ip.getDist();
           isect.setIpoint(ip.getIpoint());
           isect.setDist(ip.getDist());
-          isect.setTriangle(t);
+          isect.setFigures(figures);
          }
      }
    return isect;  // return intersection point and normal
@@ -186,8 +186,8 @@ RGB addColors(RGB c1, RGB c2, float ratio)
   
 RGB lighting(Ray ray, IPoint ip, int rec) {
   Vec3D point=ip.getIpoint();
-  Triangle triangle=ip.getTriangle();
-  RGB color = addColors(triangle.getColor(), ambientColor,1);
+  Figures figures=ip.getFigures();
+  RGB color = addColors(figures.getColor(), ambientColor,1);
   Ray shadowRay=new Ray();
    for(Light light : lights)
        { shadowRay.setStart(point);
@@ -196,30 +196,30 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
          IPoint ip2=hitObject(shadowRay);
          if(ip2.getDist()<IPoint.epsilon)
          {
-           float ratio=Math.max(0,shadowRay.getDir().dot(triangle.getNormal()));
+           float ratio=Math.max(0,shadowRay.getDir().dot(figures.getNormal()));
            color = addColors(color,light.getColor(),ratio);
          }
        }
      Ray reflection=new Ray();
      Vec3D L=ray.getDir().mult(-1);
      reflection.setStart(point);
-     reflection.setDir(triangle.getNormal().mult(2*triangle.getNormal().dot(L)).minus(L));
+     reflection.setDir(figures.getNormal().mult(2*figures.getNormal().dot(L)).minus(L));
      reflection.getDir().normalize();
      RGB rcolor=rayTrace(reflection, rec+1);
-     float ratio =  (float) Math.pow(Math.max(0,reflection.getDir().dot(L)), triangle.getShininess());
+     float ratio =  (float) Math.pow(Math.max(0,reflection.getDir().dot(L)), figures.getShininess());
      color = addColors(color,rcolor,ratio);
      return(color);
   }
 
   void createScene()
-   { triangles = new ArrayList<Triangle>();
+   { figuresList = new ArrayList<Figures>();
 
    
-     Cube.addCube(triangles, 0,35,0, 10,10,10,new RGB(0.3f,0,0),0.4f);       //rot, klein
-     Cube.addCube(triangles, -70,-20,-20, 20,100,100,new RGB(0f,0,0.3f),.4f);
-     Cube.addCube(triangles, -30,30,40, 20,20,20,new RGB(0,0.4f,0),0.2f);        // gr�n, klein
-     Cube.addCube(triangles, 50,-20,-40, 10,80,100,new RGB(.5f,.5f,.5f), 0.2f);
-     Cube.addCube(triangles, -70,-26,-40, 130,3,40,new RGB(.5f,.5f,.5f), 0.2f);
+     Figures.addCube(figuresList, 0,35,0, 10,10,10,new RGB(0.3f,0,0),0.4f);       //rot, klein
+     Figures.addCube(figuresList, -70,-20,-20, 20,100,100,new RGB(0f,0,0.3f),.4f);
+     Figures.addCube(figuresList, -30,30,40, 20,20,20,new RGB(0,0.4f,0),0.2f);        // gr�n, klein
+     Figures.addCube(figuresList, 50,-20,-40, 10,80,100,new RGB(.5f,.5f,.5f), 0.2f);
+     Figures.addCube(figuresList, -70,-26,-40, 130,3,40,new RGB(.5f,.5f,.5f), 0.2f);
 
 
      Matrix mRx=Matrix.createXRotation((float) (xAngleFactor *Math.PI/16));
@@ -227,7 +227,7 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
      Matrix mT=Matrix.createTranslation(0,0,200);
      Matrix m=mT.mult(mRx).mult(mRy);
      m.print();
-     m.apply(triangles);
+     m.apply(figuresList);
    }
 
     public int getWidth() {

@@ -64,15 +64,15 @@ class Matrix {
             { 0, 0, 0, 1  } });
     }
 
-    void apply(List<Triangle> ts)
-    { for(Triangle t: ts)
-    { t.setP1(this.mult(t.getP1()));
-        t.setP2(this.mult(t.getP2()));
-        t.setP3(this.mult(t.getP3()));
-        Vec3D e1=t.getP2().minus(t.getP1()),
-                e2=t.getP3().minus(t.getP1());
-        t.setNormal(e1.cross(e2));
-        t.getNormal().normalize();
+    void apply(List<Figures> f)
+    { for(Figures figures: f)
+    { figures.setP1(this.mult(figures.getP1()));
+        figures.setP2(this.mult(figures.getP2()));
+        figures.setP3(this.mult(figures.getP3()));
+        Vec3D e1=figures.getP2().minus(figures.getP1()),
+                e2=figures.getP3().minus(figures.getP1());
+        figures.setNormal(e1.cross(e2));
+        figures.getNormal().normalize();
     }
     }
 }

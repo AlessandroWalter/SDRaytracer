@@ -2,16 +2,16 @@ package main.de.unitrier.fst.alessandrowalter.sdraytracer;
 
 class IPoint {
     final static float epsilon=0.0001f;
-    private Triangle triangle;
+    private Figures figures;
     private Vec3D ipoint;
 
     private float dist;
 
-    IPoint(Triangle tt, Vec3D ip, float d) { triangle=tt; ipoint=ip; dist=d; }
+    IPoint(Figures tt, Vec3D ip, float d) { figures =tt; ipoint=ip; dist=d; }
 
 
-    Triangle getTriangle() {
-        return triangle;
+    Figures getFigures() {
+        return figures;
     }
 
     Vec3D getIpoint() {
@@ -22,8 +22,8 @@ class IPoint {
         return dist;
     }
 
-    void setTriangle(Triangle triangle) {
-        this.triangle = triangle;
+    void setFigures(Figures figures) {
+        this.figures = figures;
     }
 
     void setIpoint(Vec3D ipoint) {
