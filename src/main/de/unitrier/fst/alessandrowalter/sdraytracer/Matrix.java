@@ -1,3 +1,4 @@
+
 package main.de.unitrier.fst.alessandrowalter.sdraytracer;
 
 import java.util.List;
@@ -64,8 +65,8 @@ class Matrix {
             { 0, 0, 0, 1  } });
     }
 
-    void apply(List<Figures> f)
-    { for(Figures figures: f)
+    void apply(List<Figures> ts)
+    { for(Figures figures: ts)
     { figures.setP1(this.mult(figures.getP1()));
         figures.setP2(this.mult(figures.getP2()));
         figures.setP3(this.mult(figures.getP3()));

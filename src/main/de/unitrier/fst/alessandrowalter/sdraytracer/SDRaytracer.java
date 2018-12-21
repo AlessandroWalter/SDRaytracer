@@ -35,19 +35,19 @@ public class SDRaytracer{
 
    private List<Figures> figuresList;
 
-   private Light mainLight  = new Light(new Vec3D(0,100,0), new RGB(0.1f,0.1f,0.1f));
+   private Light mainLight  = new Light(new Vec3D(0,100,0), 0.1f,0.1f,0.1f);
 
    private Light lights[]= new Light[]{ mainLight
-                                ,new Light(new Vec3D(100,200,300), new RGB(0.5f,0,0.0f))
-                                ,new Light(new Vec3D(-100,200,300), new RGB(0.0f,0,0.5f))
+                                ,new Light(new Vec3D(100,200,300), 0.5f,0,0.0f)
+                                ,new Light(new Vec3D(-100,200,300), 0.0f,0,0.5f)
                               };
 
-   private RGB [][] image= new RGB[width][height];
+   private Light[][] image= new Light[width][height];
    
    private float fovx=(float) 0.628;
    private float fovy=(float) 0.628;
-   private RGB ambientColor =new RGB(0.01f,0.01f,0.01f);
-   private RGB black=new RGB(0.0f,0.0f,0.0f);
+   private Light ambientColor =new Light(0.01f,0.01f,0.01f);
+   private Light black=new Light(0.0f,0.0f,0.0f);
    private int yAngleFactor =4, xAngleFactor =-4;
 
 void profileRenderImage(){
@@ -139,7 +139,7 @@ void renderImage(){
    
     for(int i=0;i<width;i++)
        { try {
-          RGB [] col = (RGB[]) futureList[i].get();
+           Light[] col = (Light[]) futureList[i].get();
           for(int j=0;j<height;j++)
             image[i][j]=col[j];
          }
@@ -147,10 +147,10 @@ void renderImage(){
    catch (ExecutionException e) {}
     }
    }
- 
 
 
-RGB rayTrace(Ray ray, int rec) {
+
+Light rayTrace(Ray ray, int rec) {
    if (rec>maxRec) return black;
    IPoint ip = hitObject(ray);
    if (ip.getDist()>IPoint.epsilon)
@@ -178,16 +178,22 @@ IPoint hitObject(Ray ray) {
 }
 
 
-RGB addColors(RGB c1, RGB c2, float ratio)
- { return new RGB( (c1.getRed()+c2.getRed()*ratio),
+Light addColors(Light c1, Light c2, float ratio)
+ { return new Light( (c1.getRed()+c2.getRed()*ratio),
            (c1.getGreen()+c2.getGreen()*ratio),
            (c1.getBlue()+c2.getBlue()*ratio));
   }
+
+Light addColors(float r1, float g1, float b1, float r2, float g2, float b2, float ratio)
+{ return new Light( (r1+r2*ratio),
+        (g1+g2*ratio),
+        (b1+b2*ratio));
+}
   
-RGB lighting(Ray ray, IPoint ip, int rec) {
+Light lighting(Ray ray, IPoint ip, int rec) {
   Vec3D point=ip.getIpoint();
   Figures figures=ip.getFigures();
-  RGB color = addColors(figures.getColor(), ambientColor,1);
+  Light color = addColors(figures.getColor(), ambientColor,1);
   Ray shadowRay=new Ray();
    for(Light light : lights)
        { shadowRay.setStart(point);
@@ -197,7 +203,8 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
          if(ip2.getDist()<IPoint.epsilon)
          {
            float ratio=Math.max(0,shadowRay.getDir().dot(figures.getNormal()));
-           color = addColors(color,light.getColor(),ratio);
+           color = addColors(color.getRed(), color.getGreen(), color.getBlue()
+                   ,light.getRed(), light.getGreen(), light.getBlue(),ratio);
          }
        }
      Ray reflection=new Ray();
@@ -205,7 +212,7 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
      reflection.setStart(point);
      reflection.setDir(figures.getNormal().mult(2*figures.getNormal().dot(L)).minus(L));
      reflection.getDir().normalize();
-     RGB rcolor=rayTrace(reflection, rec+1);
+     Light rcolor=rayTrace(reflection, rec+1);
      float ratio =  (float) Math.pow(Math.max(0,reflection.getDir().dot(L)), figures.getShininess());
      color = addColors(color,rcolor,ratio);
      return(color);
@@ -215,11 +222,11 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
    { figuresList = new ArrayList<Figures>();
 
    
-     Figures.addCube(figuresList, 0,35,0, 10,10,10,new RGB(0.3f,0,0),0.4f);       //rot, klein
-     Figures.addCube(figuresList, -70,-20,-20, 20,100,100,new RGB(0f,0,0.3f),.4f);
-     Figures.addCube(figuresList, -30,30,40, 20,20,20,new RGB(0,0.4f,0),0.2f);        // gr�n, klein
-     Figures.addCube(figuresList, 50,-20,-40, 10,80,100,new RGB(.5f,.5f,.5f), 0.2f);
-     Figures.addCube(figuresList, -70,-26,-40, 130,3,40,new RGB(.5f,.5f,.5f), 0.2f);
+     Figures.addCube(figuresList, 0,35,0, 10,10,10,new Light(0.3f,0,0),0.4f);       //rot, klein
+     Figures.addCube(figuresList, -70,-20,-20, 20,100,100,new Light(0f,0,0.3f),.4f);
+     Figures.addCube(figuresList, -30,30,40, 20,20,20,new Light(0,0.4f,0),0.2f);        // gr�n, klein
+     Figures.addCube(figuresList, 50,-20,-40, 10,80,100,new Light(.5f,.5f,.5f), 0.2f);
+     Figures.addCube(figuresList, -70,-26,-40, 130,3,40,new Light(.5f,.5f,.5f), 0.2f);
 
 
      Matrix mRx=Matrix.createXRotation((float) (xAngleFactor *Math.PI/16));
@@ -258,7 +265,7 @@ RGB lighting(Ray ray, IPoint ip, int rec) {
         return startZ;
     }
 
-    RGB[][] getImage() {
+    Light[][] getImage() {
         return image;
     }
 }

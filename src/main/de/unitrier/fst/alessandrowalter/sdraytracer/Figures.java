@@ -5,11 +5,11 @@ import java.util.List;
 public class Figures {
 
     private Vec3D p1,p2,p3;
-    private RGB color;
+    private Light color;
     private Vec3D normal;
     private float shininess;
 
-    Figures(Vec3D pp1, Vec3D pp2, Vec3D pp3, RGB col, float sh)
+    Figures(Vec3D pp1, Vec3D pp2, Vec3D pp3, Light col, float sh)
     { p1=pp1; p2=pp2; p3=pp3; color=col; shininess=sh;
         Vec3D e1=p2.minus(p1),
                 e2=p3.minus(p1);
@@ -17,7 +17,7 @@ public class Figures {
         normal.normalize();
     }
 
-    static void addCube(List<Figures> triangles, int x, int y, int z, int w, int h, int d, RGB c, float sh)
+    static void addCube(List<Figures> triangles, int x, int y, int z, int w, int h, int d, Light c, float sh)
     {  //front
         triangles.add(new Figures(new Vec3D(x,y,z), new Vec3D(x+w,y,z), new Vec3D(x,y+h,z), c, sh));
         triangles.add(new Figures(new Vec3D(x+w,y,z), new Vec3D(x+w,y+h,z), new Vec3D(x,y+h,z), c, sh));
@@ -63,7 +63,7 @@ public class Figures {
         this.p3 = p3;
     }
 
-    RGB getColor() {
+    Light getColor() {
         return color;
     }
 

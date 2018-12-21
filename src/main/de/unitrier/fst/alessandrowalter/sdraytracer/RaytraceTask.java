@@ -8,10 +8,10 @@ class RaytraceTask implements Callable{
     private int i;
     RaytraceTask(SDRaytracer t, int ii) { tracer=t; i=ii; }
 
-    public RGB[] call()
-    { RGB[] col=new RGB[tracer.getHeight()];
+    public Light[] call()
+    { Light[] col=new Light[tracer.getHeight()];
         for (int j=0;j<tracer.getHeight();j++)
-        {  tracer.getImage()[i][j]=new RGB(0,0,0);
+        {  tracer.getImage()[i][j]=new Light(0,0,0);
             for(int k=0;k<tracer.getRayPerPixel();k++)
             { double di=i+(Math.random()/2-0.25);
                 double dj=j+(Math.random()/2-0.25);
